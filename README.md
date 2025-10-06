@@ -1,139 +1,76 @@
-WorkSpace Pro - Real-time Collaboration Platform
-WorkSpace Pro is a full-stack, real-time collaboration platform designed for teams. It features a modern frontend built with React and a robust backend powered by Node.js, Express, and MongoDB. The platform supports concurrent document editing, workspace management, role-based access control, and more, all facilitated by WebSockets.
+# WorkSpace Pro - Real-time Collaboration Platform
 
-✨ Features
-Real-time Document Editing: Multiple users can edit the same document simultaneously, with changes broadcasted instantly.
-Workspace Management: Organize documents and teams into separate workspaces.
-User Authentication: Secure user registration and login using JWT (Access + Refresh tokens).
-Role-Based Access Control (RBAC): Assign roles (Owner, Editor, Reader) to users within a workspace.
-Full-Text Search: Quickly find documents across workspaces with relevance-based scoring.
-File Uploads: Attach images and other files to documents.
-Background Jobs: Asynchronous tasks like sending email invitations are handled by a Bull queue.
-Dockerized Environment: Fully containerized for easy setup and consistent development/production environments.
-🏗️ Architecture
-The application is a monorepo with a decoupled frontend and backend. The backend exposes a RESTful API for standard CRUD operations and a WebSocket server for real-time events. The frontend is a single-page application (SPA) built with React.
+<div align="center">
 
-text
+[![Build Status](https://img.shields.io/github/actions/workflow/status/bpdtaran/collab-platform/ci.yml?branch=main&style=for-the-badge)](https://github.com/bpdtaran/collab-platform/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-+------------------+           +------------------+
-|                  |           |                  |
-|  React Frontend  | <------>  |   NGINX Server   |
-| (localhost:3000) |           | (Docker - Prod)  |
-|                  |           |                  |
-+------------------+           +------------------+
-        |                               |
-        | REST (HTTP/S) & WebSocket     | REST & WebSocket
-        |                               |
-        v                               v
-+--------------------------------------------------+
-|                                                  |
-|  Node.js Backend (Express + Socket.IO)           |
-|  (localhost:5000 / Docker)                       |
-|                                                  |
-|  +----------------+   +------------------------+ |
-|  |  RESTful API   |   |  WebSocket Server      | |
-|  | (Auth, Docs,  |   | (Real-time events,    | |
-|  | Workspaces)   |   | OT/CRDT, Cursors)      | |
-|  +----------------+   +------------------------+ |
-|                                                  |
-+--------------------------------------------------+
-        |                 |                  |
-        v                 v                  v
-+--------------+   +-------------+   +---------------+
-|              |   |             |   |               |
-|  MongoDB     |   |    Redis    |   | File Storage  |
-| (Database)   |   | (Bull Queue)|   |  (Uploads)    |
-|              |   |             |   |               |
-+--------------+   +-------------+   +---------------+
-🚀 Getting Started
-Prerequisites
-Node.js (v18.x or later)
-npm
-Docker & Docker Compose
-MongoDB (if running locally without Docker)
-Redis (if running locally without Docker)
-📦 Setup & Run (Docker - Recommended)
-This is the easiest way to get the full stack (frontend, backend, database, queue) running locally.
+</div>
 
-Clone the repository:
+**WorkSpace Pro** is a full-stack, real-time collaboration platform designed for modern teams. It features a responsive frontend built with **React & Material-UI** and a robust backend powered by **Node.js, Express, and MongoDB**. The platform supports concurrent document editing, workspace management with role-based access, full-text search, and more, all facilitated by **Socket.IO** for a seamless, live experience.
 
-Bash
+---
 
-git clone https://github.com/bpdtaran/collab-platform
-cd collab-platform
-Create Environment Files:
-Create a .env file in the backend directory by copying the example:
+## ✨ Key Features
 
-Bash
+-   **🚀 Real-time Document Editing**: Multiple users can edit the same document simultaneously, with changes and cursors broadcasted instantly.
+-   **🗂️ Workspace Management**: Organize documents and teams into separate, secure workspaces.
+-   **🔐 Secure Authentication**: Robust user registration and login using JWT (Access + Refresh Token flow) with `bcryptjs` hashing.
+-   **👥 Role-Based Access Control (RBAC)**: Assign roles (`Owner`, `Editor`, `Reader`) to users within each workspace to manage permissions.
+-   **🔍 Full-Text Search**: Quickly find documents across workspaces with relevance-based scoring using MongoDB's native text indexes.
+-   **📎 File Uploads**: Attach images to documents with size and MIME type validation, served from the backend.
+-   **Background Jobs**: Asynchronous tasks like sending email invitations are handled efficiently by a **BullMQ** queue with Redis.
+-   **🐳 Dockerized Environment**: Fully containerized for one-command setup and consistent development/production environments.
 
-cp backend/.env.example backend/.env
-Create a .env file in the frontend directory:
+---
 
-Bash
+## 🛠️ Tech Stack
 
-cp frontend/.env.example frontend/.env
-Note: The default values in the .env.example files are already configured for Docker.
+| Category      | Technology                                                                                                                                                             |
+| :------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend**  | ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=react-router) ![Material-UI](https://img.shields.io/badge/Material--UI-0081CB?logo=mui) ![Axios](https://img.shields.io/badge/Axios-5A29E4?logo=axios) |
+| **Backend**   | ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs) ![Express](https://img.shields.io/badge/Express-000000?logo=express) ![Socket.IO](https://img.shields.io/badge/Socket.io-010101?logo=socketdotio) ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens)             |
+| **Database**  | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb)                                                                                                    |
+| **Queue**     | ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis) ![BullMQ](https://img.shields.io/badge/BullMQ-D12A18?logo=bull)                                            |
+| **DevOps**    | ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker) ![Nginx](https://img.shields.io/badge/NGINX-009639?logo=nginx) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions) |
 
-Build and run the containers:
-From the root directory (collab-platform), run:
+---
 
-Bash
+## 🏗️ Architecture
 
-docker-compose up --build
-Access the application:
+The application follows a decoupled monorepo structure. The backend exposes a RESTful API and a WebSocket server, while the React frontend consumes these services.
 
-Frontend: http://localhost:3000
-Backend API: http://localhost:5000/api/health
-🛠️ Setup & Run (Local - Without Docker)
-If you prefer to run the services directly on your machine.
+```mermaid
+graph TD
+    subgraph User Endpoints
+        A[Browser <br> React SPA]
+    end
 
-Clone the repository and install dependencies:
+    subgraph Infrastructure
+        B[NGINX <br> (Reverse Proxy)]
+    end
+    
+    subgraph Application Layer
+        C[Backend API <br> (Node.js/Express)]
+        D[WebSocket Server <br> (Socket.IO)]
+    end
 
-Bash
+    subgraph Data & Services
+        E[MongoDB <br> (Database)]
+        F[Redis <br> (Queue/Cache)]
+        G[File Storage <br> (Local/S3)]
+    end
 
-git clone https://github.com/your-username/collab-platform.git
-cd collab-platform
+    A -- HTTP/S --> B
+    B -- Proxy Pass --> C
+    A -- WebSocket --> D
+    C --- E
+    C --- F
+    C --- G
+    D --- E
+    D --- F
 
-# Install backend dependencies
-cd backend
-npm install
-cp .env.example .env # Edit MONGODB_URI to point to your local instance
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-cp .env.example .env # The default API URL should work
-Start your database and queue:
-Make sure your local MongoDB and Redis servers are running.
-
-Start the backend server:
-In a new terminal, from the backend directory:
-
-Bash
-
-npm run dev
-The server will be available at http://localhost:5000.
-
-Start the frontend development server:
-In another terminal, from the frontend directory:
-
-Bash
-
-npm start
-The application will be available at http://localhost:3000.
-
-⚙️ Environment Variables
-Backend (backend/.env)
-Variable	Description	Default (for Docker)
-PORT	The port the backend server will run on.	5000
-NODE_ENV	Application environment.	development
-MONGODB_URI	Connection string for the MongoDB database.	mongodb://mongo:27017/collab-platform
-ACCESS_TOKEN_SECRET	Secret key for signing JWT access tokens.	your_dev_access_secret ( Change in prod! )
-REFRESH_TOKEN_SECRET	Secret key for signing JWT refresh tokens.	your_dev_refresh_secret ( Change in prod! )
-FRONTEND_URL	The URL of the frontend application for CORS configuration.	http://localhost:3000
-REDIS_HOST	Hostname for the Redis server used by Bull queue.	redis
-REDIS_PORT	Port for the Redis server.	6379
-Frontend (frontend/.env)
-Variable	Description	Default (for Docker & Local)
-REACT_APP_API_URL	The base URL for the backend RESTful API.	http://localhost:5000/api
-REACT_APP_SOCKET_URL	The base URL for the backend WebSocket server.	http://localhost:5000
+    style A fill:#cde4ff,stroke:#333,stroke-width:2px
+    style B fill:#e6ffcc,stroke:#333,stroke-width:2px
+    style C fill:#d2ffd2,stroke:#333,stroke-width:2px
+    style D fill:#d2ffd2,stroke:#333,stroke-width:2px
