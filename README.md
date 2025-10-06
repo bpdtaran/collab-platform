@@ -43,22 +43,22 @@ The application follows a decoupled monorepo structure. The backend exposes a RE
 ```mermaid
 graph TD
     subgraph User Endpoints
-        A[Browser <br> React SPA]
+        A["Browser <br> React SPA"]
     end
 
     subgraph Infrastructure
-        B[NGINX <br> (Reverse Proxy)]
+        B["NGINX <br> (Reverse Proxy)"]
     end
     
     subgraph Application Layer
-        C[Backend API <br> (Node.js/Express)]
-        D[WebSocket Server <br> (Socket.IO)]
+        C["Backend API <br> (Node.js/Express)"]
+        D["WebSocket Server <br> (Socket.IO)"]
     end
 
     subgraph Data & Services
-        E[MongoDB <br> (Database)]
-        F[Redis <br> (Queue/Cache)]
-        G[File Storage <br> (Local/S3)]
+        E["MongoDB <br> (Database)"]
+        F["Redis <br> (Queue/Cache)"]
+        G["File Storage <br> (Local/S3)"]
     end
 
     A -- HTTP/S --> B
