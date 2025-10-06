@@ -74,9 +74,6 @@ graph TD
     style B fill:#e6ffcc,stroke:#333,stroke-width:2px
     style C fill:#d2ffd2,stroke:#333,stroke-width:2px
     style D fill:#d2ffd2,stroke:#333,stroke-width:2px
-```
-
----
 
 ## 🚀 Getting Started
 
